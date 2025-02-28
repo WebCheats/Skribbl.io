@@ -292,6 +292,7 @@
             font-size: 12px;
             color: #888;
             opacity: 0.7;
+            margin-bottom: 18px;
         }
 
         .dark-mode #footer {
@@ -443,10 +444,11 @@
             document.body.classList.toggle('dark-mode');
             const themeToggle = document.getElementById('theme-toggle');
             if (document.body.classList.contains('dark-mode')) {
-                themeToggle.innerHTML = '<i class="bi bi-circle-fill"></i>';
+                themeToggle.innerHTML = '<i class="bi bi-sun"></i>';
             } else {
                 themeToggle.innerHTML = '<i class="bi bi-moon-fill"></i>';
             }
+            updatePaginationControls(); // Update pagination controls when theme changes
         }
 
         // JavaScript for Offline File Download
@@ -709,16 +711,17 @@
 
         function updatePaginationControls() {
             const paginationDiv = document.getElementById('pagination-controls');
+            const isDarkMode = document.body.classList.contains('dark-mode');
             paginationDiv.innerHTML = `
-                <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>
-                    <i class="bi bi-arrow-left-short"></i>
-                </button>
-                <input type="number" id="page-input" min="1" max="${totalPages}" value="${currentPage}" onchange="goToPage()" class="page-input">
-                <button onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>
-                    <i class="bi bi-arrow-right-short"></i>
-                </button>
-                <div class="page-info">Page ${currentPage} of ${totalPages}</div>
-            `;
+        <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''} style="background-color: ${currentPage === 1 ? (isDarkMode ? '#1e1e1e' : '#ccc') : 'inherit'}">
+            <i class="bi bi-arrow-left-short" style="color: ${currentPage === 1 ? (isDarkMode ? '#e0e0e0' : '#000') : 'inherit'}"></i>
+        </button>
+        <input type="number" id="page-input" min="1" max="${totalPages}" value="${currentPage}" onchange="goToPage()" class="page-input">
+        <button onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>
+            <i class="bi bi-arrow-right-short" style="color: ${currentPage === totalPages ? (isDarkMode ? '#e0e0e0' : '#000') : 'inherit'}"></i>
+        </button>
+        <div class="page-info">Page ${currentPage} of ${totalPages}</div>
+    `;
         }
 
         function changePage(delta) {
@@ -748,65 +751,65 @@
 
         // Update CSS for pagination controls
         const paginationStyles = `
-            #pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-}
+    #pagination-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
     #pagination-controls.hidden {
-    display: none;
-}
-            #pagination-controls button {
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 5px 10px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-            #pagination-controls button:disabled {
-                background-color: #ccc;
-                cursor: not-allowed;
-            }
-            #pagination-controls input {
-                width: 50px;
-                padding: 5px;
-                text-align: center;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-            }
-            .page-info {
-                font-size: 14px;
-                color: #555;
-            }
-            .dark-mode #pagination-controls button {
-                background-color: #2196F3;
-            }
-            .dark-mode #pagination-controls input {
-                background-color: #1e1e1e;
-                border-color: #333;
-                color: #e0e0e0;
-            }
-            .page-input {
-                transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-            }
-            .dark-mode .page-input {
-                background-color: #1e1e1e;
-                border-color: #333;
-                color: #e0e0e0;
-            }
-            .dark-mode .page-info {
-                color: #aaa;
-            }
-        `;
+        display: none;
+    }
+    #pagination-controls button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    #pagination-controls button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    #pagination-controls input {
+        width: 50px;
+        padding: 5px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .page-info {
+        font-size: 14px;
+        color: #555;
+    }
+    .dark-mode #pagination-controls button {
+        background-color: #2196F3;
+    }
+    .dark-mode #pagination-controls input {
+        background-color: #1e1e1e;
+        border-color: #333;
+        color: #e0e0e0;
+    }
+    .page-input {
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .dark-mode .page-input {
+        background-color: #1e1e1e;
+        border-color: #333;
+        color: #e0e0e0;
+    }
+    .dark-mode .page-info {
+        color: #aaa;
+    }
+`;
         const styleSheet = document.createElement('style');
         styleSheet.type = 'text/css';
         styleSheet.innerText = paginationStyles;
@@ -850,7 +853,7 @@
             const customWordlist = urlParams.get('customWordlist');
             if (customWordlist) {
                 document.getElementById('custom-wordlist-input').value = decodeURIComponent(customWordlist);
-                useCustomWordlist();
+                useCustomWordlist(); // Automatically use the custom wordlist from the URL
             }
         }
 
@@ -859,6 +862,7 @@
             checkForUpdates();
             loadWords().catch(handleError);
             document.getElementById('search').addEventListener('input', performSearch);
+            updatePaginationControls();
         });
 
         // Initial Load
